@@ -1,0 +1,59 @@
+# Ignore dependencies
+node_modules/
+packages/*/node_modules/
+
+# Ignore environment files
+.env
+.env.*
+*.env
+
+# Ignore build outputs
+dist/
+build/
+out/
+coverage/
+*.log
+
+# Ignore OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Ignore lock and cache files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.npm/
+.cache/
+.next/
+.vercel/
+*.tgz
+
+# Ignore test snapshots and reports
+*.snap
+*.lcov
+test-results/
+reports/
+
+# Ignore images, videos, and other binaries
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.mp4
+*.mov
+*.avi
+*.zip
+*.tar
+*.gz
+*.7z
+*.pdf
+*.exe
+*.dll
+
+# Ignore misc
+tmp/
+temp/
