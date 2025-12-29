@@ -35,3 +35,9 @@ pids
 
 # User data
 users.json
+
+# Database
+data/
+*.db
+*.db-shm
+*.db-wal

@@ -1,17 +1,13 @@
 import { Router, Request, Response } from 'express';
-import { carts } from '../data/storage.js';
-import { products } from '../data/products.js';
+import { getCart, addToCart, updateCartItemQuantity, removeFromCart, clearCart } from '../data/cartService.js';
+import { products } from '../data/productService.js';
 
 const router = Router();
 
 // Get cart for user
 router.get('/:userId', (req: Request, res: Response) => {
     const { userId } = req.params;
-    const cart = carts.get(userId);
-
-    if (!cart) {
-        return res.json({ items: [] });
-    }
+    const cart = getCart(userId);
 
     // Enrich cart items with product details
     const enrichedItems = cart.items.map(item => {
@@ -39,28 +35,21 @@ router.post('/:userId/items', (req: Request, res: Response) => {
         return res.status(404).json({ error: 'Product not found' });
     }
 
-    let cart = carts.get(userId);
-    if (!cart) {
-        cart = { userId, items: [] };
-        carts.set(userId, cart);
-    }
+    // Add to cart using database service
+    addToCart(userId, productId, quantity);
+    console.log(`🛒 Added to cart: ${product.name} x${quantity} for user ${userId}`);
 
-    const existingItem = cart.items.find(item => item.productId === productId);
-    if (existingItem) {
-        existingItem.quantity += quantity;
-        console.log(`🛒 Updated cart: ${product.name} quantity now ${existingItem.quantity} for user ${userId}`);
-    } else {
-        cart.items.push({ productId, quantity });
-        console.log(`🛒 Added to cart: ${product.name} x${quantity} for user ${userId}`);
-    }
+    // Get updated cart
+    const cart = getCart(userId);
+    const enrichedItems = cart.items.map(item => {
+        const p = products.find(pr => pr.id === item.productId);
+        return { product: p, quantity: item.quantity };
+    });
 
     res.json({
         message: 'Item added to cart',
         cart: {
-            items: cart.items.map(item => {
-                const p = products.find(pr => pr.id === item.productId);
-                return { product: p, quantity: item.quantity };
-            })
+            items: enrichedItems
         }
     });
 });
@@ -74,26 +63,24 @@ router.put('/:userId/items/:productId', (req: Request, res: Response) => {
         return res.status(400).json({ error: 'Quantity must be at least 1' });
     }
 
-    const cart = carts.get(userId);
-    if (!cart) {
-        return res.status(404).json({ error: 'Cart not found' });
-    }
-
-    const item = cart.items.find(i => i.productId === productId);
-    if (!item) {
+    const success = updateCartItemQuantity(userId, productId, quantity);
+    if (!success) {
         return res.status(404).json({ error: 'Item not found in cart' });
     }
 
-    item.quantity = quantity;
     console.log(`🔄 Updated quantity for product ${productId} to ${quantity}`);
+
+    // Get updated cart
+    const cart = getCart(userId);
+    const enrichedItems = cart.items.map(item => {
+        const p = products.find(pr => pr.id === item.productId);
+        return { product: p, quantity: item.quantity };
+    });
 
     res.json({
         message: 'Quantity updated',
         cart: {
-            items: cart.items.map(item => {
-                const p = products.find(pr => pr.id === item.productId);
-                return { product: p, quantity: item.quantity };
-            })
+            items: enrichedItems
         }
     });
 });
@@ -102,21 +89,24 @@ router.put('/:userId/items/:productId', (req: Request, res: Response) => {
 router.delete('/:userId/items/:productId', (req: Request, res: Response) => {
     const { userId, productId } = req.params;
 
-    const cart = carts.get(userId);
-    if (!cart) {
-        return res.status(404).json({ error: 'Cart not found' });
+    const success = removeFromCart(userId, productId);
+    if (!success) {
+        return res.status(404).json({ error: 'Cart not found or item not in cart' });
     }
 
-    cart.items = cart.items.filter(item => item.productId !== productId);
     console.log(`🗑️ Removed product ${productId} from cart`);
+
+    // Get updated cart
+    const cart = getCart(userId);
+    const enrichedItems = cart.items.map(item => {
+        const p = products.find(pr => pr.id === item.productId);
+        return { product: p, quantity: item.quantity };
+    });
 
     res.json({
         message: 'Item removed from cart',
         cart: {
-            items: cart.items.map(item => {
-                const p = products.find(pr => pr.id === item.productId);
-                return { product: p, quantity: item.quantity };
-            })
+            items: enrichedItems
         }
     });
 });
@@ -124,7 +114,7 @@ router.delete('/:userId/items/:productId', (req: Request, res: Response) => {
 // Clear cart
 router.delete('/:userId', (req: Request, res: Response) => {
     const { userId } = req.params;
-    carts.delete(userId);
+    clearCart(userId);
     console.log(`🧹 Cleared cart for user ${userId}`);
     res.json({ message: 'Cart cleared' });
 });

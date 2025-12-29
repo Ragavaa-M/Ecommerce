@@ -4,6 +4,8 @@ A full-stack e-commerce demonstration platform showcasing the complete shopping 
 
 ## 🚀 Quick Start
 
+> **New!** This application now uses SQLite for persistent data storage. See [QUICK_START_DATABASE.md](./QUICK_START_DATABASE.md) for database-specific information.
+
 ### Run the Full Application
 
 ```bash
@@ -30,8 +32,10 @@ npm run dev
 ## 📚 Documentation
 
 - **[RUNNING.md](./RUNNING.md)** - Detailed guide for running the application
+- **[DATABASE_MIGRATION.md](./DATABASE_MIGRATION.md)** - Database setup and migration guide
 - **[BACKEND_SUMMARY.md](./BACKEND_SUMMARY.md)** - Backend implementation overview
 - **[server/README.md](./server/README.md)** - Complete API documentation
+- **[server/data/README.md](./server/data/README.md)** - Database schema and operations
 - **[PRD.md](./PRD.md)** - Product requirements and design specifications
 
 ## ✨ Features
@@ -46,17 +50,20 @@ npm run dev
 
 ### Backend API
 - ✅ RESTful API with Express.js
+- ✅ SQLite database for persistent storage
 - ✅ Authentication endpoints
 - ✅ Product management with search & filters
 - ✅ Cart operations (add, update, remove)
 - ✅ Order creation and tracking
 - ✅ TypeScript for type safety
 - ✅ Hot-reload with tsx watch
+- ✅ Automatic database initialization and migration
 
 ## 🛠️ Tech Stack
 
 - **Frontend**: React 19, TypeScript, Vite, Tailwind CSS, Radix UI
 - **Backend**: Express.js, TypeScript, Node.js
+- **Database**: SQLite with better-sqlite3
 - **State Management**: React hooks with KV storage
 - **API**: RESTful with JSON
 - **Dev Tools**: tsx, concurrently, ESLint

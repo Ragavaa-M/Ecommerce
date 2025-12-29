@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
+import './data/db.js'; // Initialize database
 import authRoutes from './routes/auth.js';
 import productRoutes from './routes/products.js';
 import cartRoutes from './routes/cart.js';

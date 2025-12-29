@@ -11,7 +11,12 @@
         "optimize": "vite optimize",
         "preview": "vite preview",
         "server": "tsx watch server/index.ts",
-        "start": "concurrently \"npm run dev\" \"npm run server\" --names \"frontend,backend\" --prefix-colors \"cyan,magenta\""
+        "start": "concurrently \"npm run dev\" \"npm run server\" --names \"frontend,backend\" --prefix-colors \"cyan,magenta\"",
+        "db:stats": "node scripts/db-utils.js stats",
+        "db:reset": "node scripts/db-utils.js reset",
+        "db:backup": "node scripts/db-utils.js backup",
+        "db:users": "node scripts/db-utils.js users",
+        "db:products": "node scripts/db-utils.js products"
     },
     "dependencies": {
         "@github/spark": "^0.39.0",
@@ -49,6 +54,8 @@
         "@tailwindcss/container-queries": "^0.1.1",
         "@tailwindcss/vite": "^4.1.11",
         "@tanstack/react-query": "^5.83.1",
+        "@types/better-sqlite3": "^7.6.13",
+        "better-sqlite3": "^12.5.0",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "cmdk": "^1.1.1",
